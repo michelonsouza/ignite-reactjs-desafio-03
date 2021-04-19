@@ -1,1 +1,17 @@
-// TODO
+.homeContainer {
+  padding: 5rem 0;
+
+  img {
+    display: block;
+    margin-bottom: 4rem;
+  }
+}
+
+.postsContainer {
+  display: flex;
+  flex-direction: column;
+
+  & > div + div {
+    margin-top: 3.125rem
+  }
+}

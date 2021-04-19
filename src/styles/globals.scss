@@ -2,6 +2,59 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased !important;
 }
 
-// TODO
+:root {
+  --white: #fff;
+
+  --gray-100: #F8F8F8;
+  --gray-300: #bbbbbb;
+  --gray-400: #D7D7D7;
+  --gray-900: #1A1D23;
+
+  --pink-500: #FF57B2;
+
+  --break-point-xs: 732px;
+  --break-point-sm: 1024px;
+
+  --header-height: 6.563rem;
+}
+
+@media (max-width: var(--break-point-sm)) {
+  html {
+    font-size: 93.75%;
+  }
+}
+
+@media (max-width: var(--break-point-xs)) {
+  html {
+    font-size: 87.5%;
+  }
+}
+
+body {
+  background: var(--gray-900);
+  color: var(--white);
+}
+
+body,
+input,
+textarea,
+select,
+button {
+  font: 400 1rem "Inter", sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--pink-500);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
