@@ -33,10 +33,14 @@ interface HomeProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function dataFormatter(data: any): Post {
+function dataFormatter(data: any, formatDate?: boolean): Post {
   return {
     uid: data.uid,
-    first_publication_date: data.first_publication_date,
+    first_publication_date: formatDate
+      ? format(parseISO(data.first_publication_date), 'dd MMM yyyy', {
+          locale: ptBR,
+        })
+      : data.first_publication_date,
     data: {
       title: data.data.title,
       subtitle: data.data.subtitle,
@@ -69,7 +73,10 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
         .then(data => {
           setHasNextPage(data.next_page);
           setPosts(oldState => {
-            return [...oldState, ...data.results.map(dataFormatter)];
+            return [
+              ...oldState,
+              ...data.results.map(item => dataFormatter(item, true)),
+            ];
           });
         });
     }
@@ -108,7 +115,7 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   );
 
-  const results = postsResponse.results.map(dataFormatter);
+  const results = postsResponse.results.map(item => dataFormatter(item));
 
   return {
     props: {

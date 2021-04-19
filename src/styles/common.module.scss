@@ -11,6 +11,32 @@
   padding-top: 2rem;
 }
 
+.postInfosContainer {
+  display: flex;
+  align-items: center;
+  margin-top: 1.5rem;
+  color: var(--gray-300);
+
+  div {
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: 0.7rem;
+    }
+
+    span {
+      font-size: 0.875rem;
+      line-height: 1.1rem;
+      // text-transform: capitalize;
+    }
+  }
+
+  & > div + div {
+    margin-left: 1.798rem;
+  }
+}
+
 // .title {
 //   font-size: 3rem;
 //   line-height: 3.631rem;

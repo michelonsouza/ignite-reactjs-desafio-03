@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { FiUser, FiCalendar } from 'react-icons/fi';
 
+import commonStyles from '../../../styles/common.module.scss';
+
 import classes from './styles.module.scss';
 
 import { Post as PostType } from '../..';
@@ -18,7 +20,7 @@ export function Post({ post }: PostProps): JSX.Element {
         </a>
       </Link>
       <p>{post.data.subtitle}</p>
-      <div className={classes.postInfosContainer}>
+      <div className={commonStyles.postInfosContainer}>
         <div>
           <FiCalendar />
           <span>{post.first_publication_date}</span>
