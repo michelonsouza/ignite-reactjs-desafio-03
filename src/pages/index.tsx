@@ -1,4 +1,6 @@
+import { useCallback, useState } from 'react';
 import { GetStaticProps } from 'next';
+import Head from 'next/head';
 import Prismic from '@prismicio/client';
 import { format, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
@@ -30,19 +32,69 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function dataFormatter(data: any): Post {
+  return {
+    uid: data.uid,
+    first_publication_date: data.first_publication_date,
+    data: {
+      title: data.data.title,
+      subtitle: data.data.subtitle,
+      author: data.data.author,
+    },
+  };
+}
+
 export default function Home({ postsPagination }: HomeProps): JSX.Element {
+  const [posts, setPosts] = useState<Post[]>(
+    postsPagination.results.map(post => ({
+      ...post,
+      first_publication_date: format(
+        parseISO(post.first_publication_date),
+        'dd MMM yyyy',
+        {
+          locale: ptBR,
+        }
+      ),
+    }))
+  );
+  const [hasNextPage, setHasNextPage] = useState<string | null>(
+    postsPagination.next_page
+  );
+
+  const handleGetMoreItems = useCallback(() => {
+    if (hasNextPage) {
+      fetch(hasNextPage)
+        .then(res => res.json())
+        .then(data => {
+          setHasNextPage(data.next_page);
+          setPosts(oldState => {
+            return [...oldState, ...data.results.map(dataFormatter)];
+          });
+        });
+    }
+  }, [hasNextPage]);
+
   return (
-    <div className={[styles.homeContainer, commonStyles.container].join(' ')}>
-      <img src="/images/logo.svg" alt="logo" />
-      {/* <div className={commonStyles.container}>
+    <>
+      <Head>
+        <title>spacetraveling | Posts</title>
+      </Head>
+      <div className={[styles.homeContainer, commonStyles.container].join(' ')}>
         <img src="/images/logo.svg" alt="logo" />
-      </div> */}
-      <div className={styles.postsContainer}>
-        {postsPagination.results.map(post => (
-          <PostComponent post={post} key={post.uid} />
-        ))}
+        <div className={styles.postsContainer}>
+          {posts.map(post => (
+            <PostComponent post={post} key={post.uid} />
+          ))}
+        </div>
+
+        {hasNextPage && (
+          <button type="button" onClick={handleGetMoreItems}>
+            Carregar mais posts
+          </button>
+        )}
       </div>
-    </div>
+    </>
   );
 }
 
@@ -52,23 +104,11 @@ export const getStaticProps: GetStaticProps = async () => {
     [Prismic.Predicates.at('document.type', 'posts')],
     {
       fetch: ['post.title', 'post.subtitle', 'post.author'],
-      pageSize: 100,
+      pageSize: 1,
     }
   );
 
-  const results = postsResponse.results.map(post => ({
-    uid: post.uid,
-    first_publication_date: post.first_publication_date
-      ? format(parseISO(post.first_publication_date), 'dd MMM yyyy', {
-          locale: ptBR,
-        })
-      : null,
-    data: {
-      title: post.data.title,
-      subtitle: post.data.subtitle,
-      author: post.data.author,
-    },
-  }));
+  const results = postsResponse.results.map(dataFormatter);
 
   return {
     props: {

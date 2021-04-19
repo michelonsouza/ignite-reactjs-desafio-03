@@ -5,6 +5,15 @@
     display: block;
     margin-bottom: 4rem;
   }
+
+  & > button {
+    background: transparent;
+    border: 0;
+    color: var(--pink-500);
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 4.125rem;
+  }
 }
 
 .postsContainer {

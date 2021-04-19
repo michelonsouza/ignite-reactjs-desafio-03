@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { FiUser, FiCalendar } from 'react-icons/fi';
 
 import classes from './styles.module.scss';
@@ -11,7 +12,11 @@ interface PostProps {
 export function Post({ post }: PostProps): JSX.Element {
   return (
     <div className={classes.postContainer}>
-      <h3 className={classes.title}>{post.data.title}</h3>
+      <Link href={`/post/${post.uid}`}>
+        <a title={post.data.title}>
+          <h3 className={classes.title}>{post.data.title}</h3>
+        </a>
+      </Link>
       <p>{post.data.subtitle}</p>
       <div className={classes.postInfosContainer}>
         <div>

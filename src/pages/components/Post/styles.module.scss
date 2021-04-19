@@ -2,12 +2,21 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  text-decoration: none !important;
+  a {
+    text-decoration: none !important;
 
-  h3 {
-    font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--gray-100);
-  line-height: 2.12rem;
+    &:hover h3 {
+      color: var(--pink-500);
+    }
+
+    h3 {
+      transition: color 200ms ease;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--gray-100);
+      line-height: 2.12rem;
+    }
   }
 
   p {
@@ -34,6 +43,7 @@
     span {
       font-size: 0.875rem;
       line-height: 1.1rem;
+      text-transform: capitalize;
     }
   }
 
