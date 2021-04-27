@@ -17,6 +17,8 @@ import styles from './post.module.scss';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
+  slugs?: string[];
   data: {
     title: string;
     banner: {
@@ -69,6 +71,20 @@ export default function Post({ post }: PostProps): JSX.Element {
     return '';
   }, [post?.data.content]);
 
+  const lastEdit = useMemo(() => {
+    if (post?.last_publication_date) {
+      return format(
+        parseISO(post.last_publication_date),
+        "'* editado em' dd MMM yyyy, 'às' HH:mm",
+        {
+          locale: ptBR,
+        }
+      );
+    }
+
+    return '';
+  }, [post?.last_publication_date]);
+
   if (router.isFallback) {
     return <h1>Carregando...</h1>;
   }
@@ -100,6 +116,13 @@ export default function Post({ post }: PostProps): JSX.Element {
               <span className={styles.lowerCase}>{time}</span>
             </div>
           </div>
+          <div className={commonStyles.postInfosContainer}>
+            <div>
+              <span className={styles.lowerCase}>
+                <em>{lastEdit}</em>
+              </span>
+            </div>
+          </div>
         </header>
 
         <div className={styles.contentContainer}>
@@ -112,6 +135,29 @@ export default function Post({ post }: PostProps): JSX.Element {
             </div>
           ))}
         </div>
+        <div
+          ref={element => {
+            if (!element || element.childNodes.length) {
+              return;
+            }
+
+            const script = document.createElement('script');
+            script.setAttribute('id', 'utteranc-comments');
+            script.setAttribute('src', 'https://utteranc.es/client.js');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.setAttribute('async', 'true');
+            script.setAttribute(
+              'repo',
+              'michelonsouza/ignite-reactjs-desafio-03'
+            );
+            script.setAttribute(
+              'issue-term',
+              `${post.slugs ? post.slugs[0] : 'pathname'}`
+            );
+            script.setAttribute('theme', 'dark-blue');
+            element.appendChild(script);
+          }}
+        />
       </div>
     </>
   );
